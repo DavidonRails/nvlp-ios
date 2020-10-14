@@ -14,7 +14,27 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
+        checkAPIStatus()
+    }
+    
+    func checkAPIStatus() {
+        //Call NETWORK STATUS
+        ProgressHud.shared.show(view: view, msg: "")
+        APIService.shared.check(completion: {
+            error, res in
+            ProgressHud.shared.dismiss()
+            
+            if error != nil {
+                self.showAlert(title: "Error", msg: error!.localizedDescription)
+            } else {
+                let response = res as! [String: Any]
+                let status = response["status"] as? String ?? ""
+                if status == "OK" {
+                    let application = response["application"] as! String
+                    self.showAlert(title: application, msg: "")
+                }
+            }
+        })
     }
     
     @IBAction func onLogin(_ sender: Any) {

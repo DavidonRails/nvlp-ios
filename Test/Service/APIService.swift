@@ -15,6 +15,26 @@ class APIService {
         
     }
     
+    func check(completion: @escaping (Error?, Any?)->()) {
+            
+        let url = Constants.CHECK
+    
+        let headers: HTTPHeaders = [
+            "Content-Type": "application/json"
+        ]
+        
+        AF.request(URL(string: url)!, method: .get, encoding: JSONEncoding.default, headers: headers).responseJSON {
+            response in
+            
+            switch response.result {
+            case .success(let data):
+                completion(nil, data)
+            case .failure(let error):
+                completion(error, nil)
+            }
+        }
+    }
+    
     func login(body: [String: Any], completion: @escaping (Error?, Any?)->()) {
             
         let url = Constants.LOGIN
